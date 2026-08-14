@@ -21,15 +21,8 @@ hr {
     border-bottom: 4px solid var(--tertiary);
 }
 
-img#i_diagram {
-    height: 20rem;
-    width: auto;
-    border: var(--debug) solid pink;
-}
-
 div#contents_bucket {
-    /*display: flex;*/
-    display: none;
+    display: flex;
     flex-direction: column;
     gap: 1rem;
 
@@ -74,6 +67,27 @@ div#i_main_bucket {
     border: var(--debug) solid red;
 }
 
+img#i_diagram {
+    height: auto;
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+    object-position: right center;
+}
+
+img#i_diagram, div#calculator {
+    flex: 0.75 1 0;
+    min-height: 0;
+    max-height: 90%;
+    height: 90%;
+    width: auto;
+    border: var(--debug) solid red;
+}
+
+div#question_bucket, div#q_bucket, div#i_main_bucket {
+    min-height: 0;
+}
+
 div.i_nested_bucket {
     display: flex;
     justify-content: space-between;
@@ -82,7 +96,14 @@ div.i_nested_bucket {
 
     margin: 0;
     padding: 0;
-    border: var(--debug) solid orange;
+    border: var(--debug) solid green;
+}
+
+div#i_main_bucket > .i_nested_bucket:first-child {
+    display: flex;
+    flex: 1 1 0;
+    min-height: 0;
+    align-items: stretch;
 }
 
 div.i_difficulty {
@@ -97,6 +118,11 @@ div.i_difficulty {
 
 div.i_difficulty.i_filled {
     background: var(--accent)
+}
+
+div#calculator {
+    margin: 0;
+    padding: 0;
 }
 
 button#i_toggle {
@@ -171,7 +197,7 @@ h2 {
     border: var(--debug) solid blue;
 }
 
-p#q_prompt {
+p#q_prompt, p#i_free_choice {
     font-weight: 800;
     font-size: 1.60rem;
     color: var(--grey);
@@ -180,6 +206,10 @@ p#q_prompt {
     margin: 0;
 
     border: var(--debug) solid blue;
+}
+
+p#i_free_choice {
+    flex: 0.25 1 0;
 }
 
 p.info {
@@ -223,7 +253,7 @@ ol#i_choices li {
     border: var(--debug) solid red;
 }
 
-ol#i_choices li.correct_choice {
+ol#i_choices li.correct_choice, p#i_free_choice.correct_choice {
     background: var(--highlight);
 }
 
@@ -232,6 +262,16 @@ ol#i_choices li::marker {
     font-weight: 800;
 }
 
-.hidden {
+li.c_topic {
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none;     /* IE 10 and IE 11 */
+    user-select: none;  
+}
+
+li.c_topic:hover {
+    cursor: pointer;
+}
+
+.hidden, div#question_bucket.hidden, div#contents_bucket.hidden {
     display: none;
 }

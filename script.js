@@ -8,19 +8,45 @@ const data = JSON.parse(item_data);
 let answerRevealed = false;
 let desmosRevealed = false;
 let correctAnswer = -1;
+let freeResponse = false;
 let questionIndex = 0;
 
 let calculator;
 
+function getQuestionsByTopic(topic) {
+    let matchingIndexes = [];
+    for (let i = 0; i < data.length; i++) {
+        if (data[i].unit === topic) {
+            matchingIndexes.push(i);
+        }
+    }
+    return matchingIndexes;
+}
+
+function getQuestionsByDifficulty(difficulty) {
+    let matchingIndexes = [];
+    for (let i = 0; i < data.length; i++) {
+        if (parseInt(data[i].diff) === difficulty) {
+            matchingIndexes.push(i);
+        }
+    }
+    return matchingIndexes;
+}
+
 function importQuestion(data, index) {
-    console.log("TASK: Load...");
     answerRevealed = false;
     questionIndex = index;
 
     let unit = data[index].unit;
     let prompt = data[index].text;
     let choices = data[index].opts;
-    let correct = parseInt(data[index].crct);
+    freeResponse = (choices === null);
+    let correct;
+    if(freeResponse) {
+        correct = data[index].crct;
+    } else {
+        correct = parseInt(data[index].crct);
+    }
     correctAnswer = correct;
     let difficulty = parseInt(data[index].diff);
     let id = data[index].id;
@@ -28,11 +54,30 @@ function importQuestion(data, index) {
     let graph_state = data[index].graph;
 
     $('#q_unit').text(unit);
-    $('#q_prompt').text(prompt);
+    $('#q_prompt').html(prompt);
+    try {
+        MathJax.typesetPromise([document.getElementById('q_prompt')]);
+    } catch (err) {
+        console.error("MathJax typesetting failed:", err);
+    }
 
-    for(let i=0; i<4; i++) {
-        $(`#chc${i+1}`).text(choices[i]);
-        $(`#chc${i+1}`).removeClass("correct_choice");
+    if(choices === null) {
+        $('#i_choices').addClass("hidden");
+        $('#i_free_choice').removeClass("hidden");
+        $('#i_free_choice').html("Free response.");
+    } else {
+        $('#i_choices').removeClass("hidden");
+        $('#i_free_choice').addClass("hidden");
+
+        for(let i=0; i<4; i++) {
+            $(`#chc${i+1}`).html(choices[i]);
+            try {
+                MathJax.typesetPromise([document.getElementById(`chc${i+1}`)]);
+            } catch (err) {
+                console.error("MathJax typesetting failed:", err);
+            }
+            $(`#chc${i+1}`).removeClass("correct_choice");
+        }
     }
 
     for(let i=0; i<3; i++) {
@@ -61,12 +106,37 @@ function importQuestion(data, index) {
     $('#i_toggle').addClass("toggle_off");
     $('#i_toggle').text("REVEAL");
 
-    console.log("TASK: Load completed!");
+    console.log("Question loaded successfully.");
+}
+
+function waitForDesmosAPI() {
+    return new Promise((resolve, reject) => {
+        if (typeof Desmos !== 'undefined' && Desmos.GraphingCalculator) {
+            resolve();
+        } else {
+            const checkInterval = setInterval(() => {
+                if (typeof Desmos !== 'undefined' && Desmos.GraphingCalculator) {
+                    clearInterval(checkInterval);
+                    resolve();
+                }
+            }, 100);
+
+            const timeout = setTimeout(() => {
+                clearInterval(checkInterval);
+                reject(new Error("Desmos API failed to load within the expected time."));
+            }, 5000);
+        }
+    });
 }
 
 $(document).ready(function() {
     let elt = document.getElementById('calculator');
-    calculator = Desmos.GraphingCalculator(elt);
+    
+    waitForDesmosAPI().then(() => {
+        calculator = Desmos.GraphingCalculator(elt);
+    }).catch((error) => {
+        console.warn("Failed to load Desmos API:", error);
+    });
 
     $("#i_toggle").on("click", function() {
 
@@ -81,7 +151,12 @@ $(document).ready(function() {
             $('#i_toggle').text("REVEAL");
             answerRevealed = false;
 
-            $(`#chc${correctAnswer}`).removeClass("correct_choice");
+            if(freeResponse) {
+                $('#i_free_choice').text("Free response.");
+                $(`#i_free_choice`).removeClass("correct_choice");
+            } else {
+                $(`#chc${correctAnswer}`).removeClass("correct_choice");
+            }
             
         } else {
             $('#i_toggle').removeClass("toggle_off");
@@ -89,7 +164,13 @@ $(document).ready(function() {
             $('#i_toggle').text("HIDE");
             answerRevealed = true;
 
-            $(`#chc${correctAnswer}`).addClass("correct_choice");
+            if(freeResponse) {
+                $('#i_free_choice').html(`Answer: ${correctAnswer}`);
+                MathJax.typesetPromise([document.getElementById('i_free_choice')]);
+                $(`#i_free_choice`).addClass("correct_choice");
+            } else {
+                $(`#chc${correctAnswer}`).addClass("correct_choice");
+            }
 
         }
     });
@@ -107,5 +188,20 @@ $(document).ready(function() {
         }
     });
 
-    importQuestion(data, 0);
+    $(".c_topic").on("click", function() {
+        let topic = $(this).text();
+        let questions = getQuestionsByTopic(topic);
+        let randomQuestion = questions[Math.floor(Math.random() * questions.length)];
+        //let randomQuestion = questions[0]; // For testing
+        if(!calculator) {
+            alert("Desmos API failed to load. Please refresh the page and try again.");
+            return;
+        }
+        if(questions && questions.length > 0) {
+            importQuestion(data, randomQuestion);
+            $('#question_bucket').removeClass("hidden");
+            $('#contents_bucket').addClass("hidden");
+        }
+    });
+
 });
