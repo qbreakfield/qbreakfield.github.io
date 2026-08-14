@@ -9,16 +9,11 @@
     --debug: 0px;
 }
 
+/* main buckets */
+
 div {
     margin: 0;
     padding: 0;
-}
-
-hr {
-    margin: 0;
-    padding: 0;
-    border: none;
-    border-bottom: 4px solid var(--tertiary);
 }
 
 div#contents_bucket {
@@ -43,31 +38,28 @@ div#question_bucket {
     border: var(--debug) solid green;
 }
 
-div#q_bucket {
+div.column_bucket {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-
-    width: 90%;
-
-    margin: 0;
-    padding: 0;
-    border: var(--debug) solid red;
-}
-
-div#i_main_bucket {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
     gap: 1.00rem;
-    flex-grow: 1;
 
     margin: 0;
     padding: 0;
     border: var(--debug) solid red;
 }
 
-img#i_diagram {
+/* separators */
+
+hr {
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-bottom: 4px solid var(--tertiary);
+}
+
+/* midpage elements */
+
+img#q_diagram {
     height: auto;
     width: auto;
     max-width: 100%;
@@ -75,20 +67,32 @@ img#i_diagram {
     object-position: right center;
 }
 
-img#i_diagram, div#calculator {
+div#q_calculator {
+    margin: 0;
+    padding: 0;
+}
+
+img#q_diagram, div#q_calculator {
     flex: 0.75 1 0;
     min-height: 0;
     max-height: 90%;
     height: 90%;
     width: auto;
     border: var(--debug) solid red;
+    outline: none;
 }
 
-div#question_bucket, div#q_bucket, div#i_main_bucket {
+img:not([src]), img[src=""] {
+  opacity: 0;
+}
+
+/* rows and columns */
+
+div#question_bucket, div.column_bucket {
     min-height: 0;
 }
 
-div.i_nested_bucket {
+div.row_bucket {
     display: flex;
     justify-content: space-between;
     row-gap: 1rem;
@@ -99,14 +103,16 @@ div.i_nested_bucket {
     border: var(--debug) solid green;
 }
 
-div#i_main_bucket > .i_nested_bucket:first-child {
+div.row_bucket#midpage_bucket {
     display: flex;
     flex: 1 1 0;
     min-height: 0;
     align-items: stretch;
 }
 
-div.i_difficulty {
+/* footer elements */
+
+div.q_difficulty {
     width: 8rem;
     height: 0.80rem;
     margin: 0;
@@ -116,16 +122,11 @@ div.i_difficulty {
     border-radius: 0.80rem;
 }
 
-div.i_difficulty.i_filled {
+div.q_difficulty.q_filled {
     background: var(--accent)
 }
 
-div#calculator {
-    margin: 0;
-    padding: 0;
-}
-
-button#i_toggle {
+button#q_toggle {
     font-size: 1.60rem;
     font-weight: 800;
     color: var(--light);
@@ -141,12 +142,12 @@ button#i_toggle {
     width: 11.20rem;
 }
 
-button#i_toggle:hover {
+button#q_toggle:hover {
     color: var(--secondary);
     cursor: pointer;
 }
 
-button#i_desmos {
+button#q_desmos {
     background: none;
     background-image: url("content/desmos_icon.png");
     background-size: cover;
@@ -161,13 +162,15 @@ button#i_desmos {
     width: 3.00rem;
 }
 
-button#i_desmos:hover:not(:disabled) {
+button#q_desmos:hover:not(:disabled) {
     cursor: pointer;
 }
 
-button#i_desmos:disabled {
+button#q_desmos:disabled {
     filter: grayscale(100%);
 }
+
+/* text and button elements */
 
 h1, h2, p, li, button {
     font-family: "Funnel Sans", sans-serif;
@@ -197,7 +200,7 @@ h2 {
     border: var(--debug) solid blue;
 }
 
-p#q_prompt, p#i_free_choice {
+p#q_prompt, p#q_free_choice {
     font-weight: 800;
     font-size: 1.60rem;
     color: var(--grey);
@@ -208,11 +211,11 @@ p#q_prompt, p#i_free_choice {
     border: var(--debug) solid blue;
 }
 
-p#i_free_choice {
+p#q_free_choice {
     flex: 0.25 1 0;
 }
 
-p.info {
+p.q_info {
     font-weight: 400;
     font-size: 2.00rem;
     color: var(--grey);
@@ -221,6 +224,10 @@ p.info {
     margin: 0;
 
     border: var(--debug) solid blue;
+}
+
+p#q_id {
+    color: var(--tertiary);
 }
 
 li {
@@ -242,7 +249,7 @@ ol {
     margin: 0;
 }
 
-ol#i_choices li {
+ol#q_choices li {
     font-weight: 400;
     font-size: 1.60rem;
     color: var(--grey);
@@ -253,24 +260,26 @@ ol#i_choices li {
     border: var(--debug) solid red;
 }
 
-ol#i_choices li.correct_choice, p#i_free_choice.correct_choice {
+ol#q_choices li.correct_choice, p#q_free_choice.correct_choice {
     background: var(--highlight);
 }
 
-ol#i_choices li::marker {
+ol#q_choices li::marker {
     color: var(--accent);
     font-weight: 800;
 }
 
 li.c_topic {
-    -webkit-user-select: none; /* Safari */
-    -ms-user-select: none;     /* IE 10 and IE 11 */
+    -webkit-user-select: none;
+    -ms-user-select: none;
     user-select: none;  
 }
 
 li.c_topic:hover {
     cursor: pointer;
 }
+
+/* modifying classes */
 
 .hidden, div#question_bucket.hidden, div#contents_bucket.hidden {
     display: none;

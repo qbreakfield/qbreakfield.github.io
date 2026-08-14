@@ -69,43 +69,49 @@
 
         <div id="question_bucket" class="hidden">
 
-            <div id="q_bucket">
+            <div class="column_bucket" style="justify-content: flex-start;">
                 <h2 id="q_unit">Lorem ipsum</h2>
                 <p id="q_prompt">Lorem ipsum dolor sit amet</p>
             </div>
 
-            <div id="i_main_bucket">
+            <div class="column_bucket" style="justify-content: flex-end; flex-grow: 1;">
 
-                <div class="i_nested_bucket" style="align-items: flex-end;">
-                        <p id="i_free_choice" class="hidden" style="margin-right: 1rem;">Lorem ipsum dolor sit amet</p>
-                        <ol id="i_choices" type="A">
-                            <li id="chc1">Alice</li>
-                            <li id="chc2">Bella</li>
-                            <li id="chc3">Claire</li>
-                            <li id="chc4">Daphne</li>
-                        </ol>
+                <div class="row_bucket" id="midpage_bucket" style="align-items: flex-end;">
 
-                    <img id="i_diagram">
-                    <div id="calculator" class="hidden"></div>
+                    <p id="q_free_choice" class="hidden" style="margin-right: 1rem;">Lorem ipsum dolor sit amet</p>
+                    <ol id="q_choices" type="A">
+                        <li id="q_chc1">Alice</li>
+                        <li id="q_chc2">Bella</li>
+                        <li id="q_chc3">Claire</li>
+                        <li id="q_chc4">Daphne</li>
+                    </ol>
+
+                    <img id="q_diagram">
+                    <div id="q_calculator" class="hidden"></div>
+
                 </div>
-                <hr>
-                <div class="i_nested_bucket">
 
-                    <div class="i_nested_bucket" style="align-items: center;">
-                        <p class="info" style="margin-right: 1rem;">DIFFICULTY</p>
-                        <div id="dft1" class="i_difficulty"></div>
-                        <div id="dft2" class="i_difficulty"></div>
-                        <div id="dft3" class="i_difficulty"></div>
+                <hr>
+
+                <div class="row_bucket">
+
+                    <div class="row_bucket" style="align-items: center;">
+                        <p class="q_info" style="margin-right: 1rem;">DIFFICULTY</p>
+                        <div id="q_dft1" class="q_difficulty"></div>
+                        <div id="q_dft2" class="q_difficulty"></div>
+                        <div id="q_dft3" class="q_difficulty"></div>
                     </div>
-                    <div class="i_nested_bucket" style="align-items: center;">
-                        <p id="i_id" class="info" style="margin-right: 1rem; color: var(--tertiary)">ABCDEF</p>
-                        <button id="i_desmos"></button>
-                        <button id="i_toggle" class="toggle_off">ACTION</button>
+                    <div class="row_bucket" style="align-items: center;">
+                        <p id="q_id" class="q_info" style="margin-right: 1rem">ABCDEF</p>
+                        <button id="q_desmos"></button>
+                        <button id="q_toggle" class="toggle_off">ACTION</button>
                     </div>
 
                 </div>
 
             </div>
+
         </div>
+
     </body>
 </html>
