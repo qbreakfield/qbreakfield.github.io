@@ -16,11 +16,11 @@ let freeResponse = false;
 let questionIndex = 0;
 let calculator;
 
-// Function to obtain all question indexes for a given unit name
-function getQuestionsByTopic(topic) {
+// Function to obtain all question indexes for a given skill name
+function getQuestionsBySkill(skill) {
     let matchingIndexes = [];
     for (let i = 0; i < data.length; i++) {
-        if (data[i].unit === topic) {
+        if (data[i].skill === skill) {
             matchingIndexes.push(i);
         }
     }
@@ -47,6 +47,22 @@ function attemptTeXFormat(elem_id) {
     }
 }
 
+// Function to return the name of a domain given a skill
+const domains = {
+    "Algebra": ["Linear equations in one variable", "Linear functions", "Linear equations in two variables", "Systems of two linear equations in two variables", "Linear inequalities in one or two variables"],
+    "Advanced Math": ["Nonlinear functions", "Nonlinear equations and systems of equations", "Equivalent expressions"],
+    "Problem Solving and Data Analysis": ["Ratios, rates, proportional relationships, and units", "Percentages", "One-variable data: Center and spread", "Two-variable data: Models and scatterplots", "Probability and conditional probability", "Inference from sample statistics and margin of error", "Evaluating statistical claims: Studies and experiments"],
+    "Geometry and Trigonometry": ["Area and volume", "Lines, angles, and triangles", "Right triangles and trigonometry", "Circles"]
+}
+function fetchDomainFromSkill(skill) {
+    for(let i=0; i<Object.keys(domains).length; i++) {
+        if(Object.values(domains)[i].includes(skill)) {
+            return Object.keys(domains)[i];
+        }
+    }
+    return "Unknown domain";
+}
+
 // Function to update question elements to match the JSON data for a given question index
 function importQuestion(data, index) {
 
@@ -57,7 +73,7 @@ function importQuestion(data, index) {
     questionIndex = index;
 
     // Initiate variables with question data
-    let unit = data[index].unit;
+    let skill = data[index].skill;
     let prompt = data[index].text;
     let choices = data[index].opts;
 
@@ -73,13 +89,14 @@ function importQuestion(data, index) {
     correctAnswer = correct;
 
     // Initiate variables with question data
-    let difficulty = parseInt(data[index].diff);
+    let difficulty_number = parseInt(data[index].diff);
     let id = data[index].id;
     let img_name = data[index].img;
     let graph_state = data[index].graph;
 
-    // Update unit and prompt with question data
-    $('#q_unit').text(unit);
+    // Update domain and prompt with question data
+    let domain = fetchDomainFromSkill(skill);
+    $('#q_unit').text(domain);
     $('#q_prompt').html(prompt);
     attemptTeXFormat('q_prompt')
 
@@ -101,14 +118,16 @@ function importQuestion(data, index) {
         }
     }
 
-    // Update difficulty bar to match question data
-    for(let i=1; i<=3; i++) {
-        if(i <= difficulty) {
-            $(`#q_dft${i}`).addClass("q_filled");
-        } else {
-            $(`#q_dft${i}`).removeClass("q_filled");
-        }
-    }
+    // Update difficulty bubble to match question data
+    const difficulties = {
+        1: "Easy",
+        2: "Medium",
+        3: "Hard"
+    };
+    $('#q_difficulty').text(difficulties[difficulty_number] ?? "Unknown");
+
+    // Update topic bubble to match question data
+    $('#q_topic').text(skill);
 
     // Update the ID text with the question's ID
     $('#q_id').text(`${id}`);
@@ -133,7 +152,7 @@ function importQuestion(data, index) {
     // Toggle the action button off by default
     $('#q_toggle').removeClass("toggle_on");
     $('#q_toggle').addClass("toggle_off");
-    $('#q_toggle').text("REVEAL");
+    $('#q_toggle').text("Reveal");
 
     console.log("Question loaded successfully.");
     return true;
@@ -184,7 +203,7 @@ $(document).ready(function() {
             // If the answer is currently visible, hide it
             $('#q_toggle').removeClass("toggle_on");
             $('#q_toggle').addClass("toggle_off");
-            $('#q_toggle').text("REVEAL");
+            $('#q_toggle').text("Reveal");
 
             if(freeResponse) { // Free response
                 $('#q_free_choice').text("Free response.");
@@ -199,7 +218,7 @@ $(document).ready(function() {
             // Otherwise, the answer is currently hidden, so show it
             $('#q_toggle').removeClass("toggle_off");
             $('#q_toggle').addClass("toggle_on");
-            $('#q_toggle').text("HIDE");
+            $('#q_toggle').text("Hide");
 
             if(freeResponse) { // Free response
                 $('#q_free_choice').html(`Answer: ${correctAnswer}`);
@@ -233,12 +252,12 @@ $(document).ready(function() {
         desmosRevealed = !desmosRevealed; // Toggle the variable
     });
 
-    // Function to handle topic clicks, opening a question of a given topic
+    // Function to handle topic clicks, opening a question of a given skill
     $(".c_topic").on("click", function() {
-        let topic = $(this).text();
+        let skill = $(this).text();
 
-        // Obtain question indexes for the topic
-        let questions = getQuestionsByTopic(topic);
+        // Obtain question indexes for the skill
+        let questions = getQuestionsBySkill(skill);
 
         // Choose a random question index
         let randomQuestion = questions[Math.floor(Math.random() * questions.length)];
@@ -251,10 +270,49 @@ $(document).ready(function() {
         }
 
         // Import and show the question
-        if(randomQuestion && questions && questions.length > 0) {
+        if(randomQuestion != null && questions != null && questions.length > 0) {
             let ready = importQuestion(data, randomQuestion);
             $('#question_bucket').removeClass("hidden");
             $('#contents_bucket').addClass("hidden");
+        }
+    });
+
+    // Function to handle question option clicks, going back or finding a similar problem
+    $(".q_bubble").on("click", function() {
+
+        // Switch on id to perform different actions
+        let thisId = this.id;
+        switch(thisId) {
+
+            case "q_back":
+                // Return to content page when back is pressed
+                $('#question_bucket').addClass("hidden");
+                $('#contents_bucket').removeClass("hidden");
+                break;
+
+            case "q_difficulty":
+                // Toggle selection when keep difficulty is pressed
+                if($(this).hasClass('q_selected')) {
+                    $(this).removeClass("q_selected");
+                } else {
+                    $(this).addClass("q_selected");
+                }
+                break;
+
+            case "q_domain":
+            case "q_skill":
+                // Toggle selection when keep difficulty is pressed
+                // If skill is enabled, domain must be enabled too
+                // If domain is disabled, skill must be disabled too
+                if($(this).hasClass('q_selected')) {
+                    $(this).removeClass("q_selected");
+                    $('#q_skill').removeClass("q_selected");
+                } else {
+                    $(this).addClass("q_selected");
+                    $('#q_domain').addClass("q_selected")
+                }
+
+                break;
         }
     });
 

@@ -42,7 +42,6 @@
                     </ol>
                 </li>
 
-
                 <li>Problem Solving and Data Analysis
                     <ol type="a">
                         <li class="c_topic">Ratios, rates, proportional relationships, and units</li>
@@ -69,9 +68,17 @@
 
         <div id="question_bucket" class="hidden">
 
-            <div class="column_bucket" style="justify-content: flex-start;">
+            <div class="column_bucket" style="justify-content: flex-start; width: 90%;">
+
                 <h2 id="q_unit">Lorem ipsum</h2>
+                <div class="row_bucket">
+                    <div class="row_bucket">
+                        <div class="q_bubble" id="q_topic">Tag</div>
+                        <div class="q_bubble" id="q_difficulty">Tag</div>
+                    </div>
+                </div>
                 <p id="q_prompt">Lorem ipsum dolor sit amet</p>
+
             </div>
 
             <div class="column_bucket" style="justify-content: flex-end; flex-grow: 1;">
@@ -95,16 +102,25 @@
 
                 <div class="row_bucket">
 
-                    <div class="row_bucket" style="align-items: center;">
+                    <!-- <div class="row_bucket" style="align-items: center;">
                         <p class="q_info" style="margin-right: 1rem;">DIFFICULTY</p>
                         <div id="q_dft1" class="q_difficulty"></div>
                         <div id="q_dft2" class="q_difficulty"></div>
                         <div id="q_dft3" class="q_difficulty"></div>
+                    </div> -->
+                    <div class="row_bucket">
+                        <div class="row_bucket">
+                            <button class="q_bubble" id="q_back">Back</button>
+                            <button class="q_bubble" id="q_similar">Find similar</button>
+                            <button class="q_bubble" id="q_difficulty">Keep difficulty</button>
+                            <button class="q_bubble" id="q_domain">Keep domain</button>
+                            <button class="q_bubble" id="q_skill">Keep skill</button>
+                        </div>
                     </div>
                     <div class="row_bucket" style="align-items: center;">
                         <p id="q_id" class="q_info" style="margin-right: 1rem">ABCDEF</p>
                         <button id="q_desmos"></button>
-                        <button id="q_toggle" class="toggle_off">ACTION</button>
+                        <button id="q_toggle" class="toggle_off">Action</button>
                     </div>
 
                 </div>

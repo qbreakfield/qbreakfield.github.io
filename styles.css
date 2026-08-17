@@ -126,8 +126,41 @@ div.q_difficulty.q_filled {
     background: var(--accent)
 }
 
+/* button, bubble elements */
+
+.q_bubble {
+    font-size: 1.20rem;
+    font-weight: 800;
+    color: var(--grey);
+
+    white-space: nowrap;
+
+    background: var(--light);
+    outline: none;
+    border: 2px solid var(--grey);
+    border-radius: 3.00rem;
+
+    margin: 0;
+    padding: 0.20rem;
+    padding-left: 1.40rem;
+    padding-right: 1.40rem;
+    height: auto;
+    width: auto;
+}
+
+button.q_bubble:hover {
+    cursor: pointer;
+    background: var(--tertiary);
+}
+
+button.q_bubble.q_selected {
+    color: var(--light);
+    background: var(--accent);
+    border: 2px solid var(--secondary);
+}
+
 button#q_toggle {
-    font-size: 1.60rem;
+    font-size: 1.20rem;
     font-weight: 800;
     color: var(--light);
 
@@ -138,12 +171,11 @@ button#q_toggle {
 
     margin: 0;
     padding: 0;
-    height: 3.00rem;
-    width: 11.20rem;
+    height: 2.60rem;
+    width: 8.20rem;
 }
 
 button#q_toggle:hover {
-    color: var(--secondary);
     cursor: pointer;
 }
 
@@ -158,8 +190,8 @@ button#q_desmos {
 
     margin: 0;
     padding: 0;
-    height: 3.00rem;
-    width: 3.00rem;
+    height: 2.60rem;
+    width: 2.60rem;
 }
 
 button#q_desmos:hover:not(:disabled) {
@@ -170,9 +202,9 @@ button#q_desmos:disabled {
     filter: grayscale(100%);
 }
 
-/* text and button elements */
+/* text elements */
 
-h1, h2, p, li, button {
+h1, h2, p, li, button, div {
     font-family: "Funnel Sans", sans-serif;
     font-optical-sizing: auto;
     font-style: normal;
@@ -217,7 +249,7 @@ p#q_free_choice {
 
 p.q_info {
     font-weight: 400;
-    font-size: 2.00rem;
+    font-size: 1.20rem;
     color: var(--grey);
 
     padding: 0;
@@ -233,7 +265,7 @@ p#q_id {
 li {
     font-weight: 500;
     font-size: 1.20rem;
-    color: var(--accent);
+    color: var(--grey);
 
     padding: 0.50rem;
     margin: 0;
@@ -270,6 +302,7 @@ ol#q_choices li::marker {
 }
 
 li.c_topic {
+    color: var(--accent);
     -webkit-user-select: none;
     -ms-user-select: none;
     user-select: none;  
